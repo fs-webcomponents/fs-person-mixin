@@ -1,4 +1,5 @@
 <link rel="import" href="../fs-api-aware/fs-api-aware.html">
+<link rel="import" href="../fs-request/fs-request.html">
 <link rel="import" href="../polymer/polymer-element.html">
 
 <script>
@@ -41,7 +42,10 @@
           type: Boolean,
           readOnly: true,
           value: false
-        }
+        },
+        
+        /** An fs-request instance */
+        _personRequest: Object
       };
     }
     
@@ -49,8 +53,83 @@
       this.loadPerson();
     }
     
+    _setupRequest() {
+      if(!this._personRequest()) {
+        this._personRequest = document.createElement('fs-request');
+        if(this.clientName) {
+          this._personRequest.clientName = this.clientName;
+        }
+        // TODO: Event listeners
+        // * loading status changes
+        // * completed status changes
+        // * response received
+      }
+    }
+    
     loadPerson() {
-      // TODO
+      
+      // TODO: don't request if the client isn't authenticated
+      if(!this.personRequested && this.personId) {
+        
+        // Make sure the fs-request instance has been created and configured
+        this._setupRequest();
+        
+        // Set the URL
+        this._personRequest.url = `/platform/tree/persons/${this.personId}`;
+        
+        // Issue the request
+        this._personRequest.generateRequest();
+      }
+    }
+    
+    /**
+     * Clear the personId and person and reset
+     * the element to its default state
+     */
+    reset() {
+      this.personId = null;
+    }
+    
+    // TODO: can we still use this if the elements won't 
+    // usually have a client that emits this event?
+    _authenticatedChanged(event) {
+      if(event.detail.value){
+        this.loadPerson();
+      }
+    }
+    
+    /**
+     * Update the state when appropriate. It's not as simple as we would want it
+     * to be because we're trying to keep the personId and person in sync while
+     * allowing either of them to change. If the personId changes we want to request
+     * a new person; if the person changes we want to update the personId. But
+     * if a personId and person are already set, then we change the person and
+     * update the personId, we don't want to clear the person and request them again.
+     */
+    _idChanged() {
+
+      // New id that does match current person; don't need to change anything
+      if(this.personId && this.person && this.personId === this.person.id){
+        // do nothing
+      }
+      
+      // Something has changed so reset
+      else {
+        this._setPersonRequested(false);
+        this._setPersonLoading(false);
+        this.person = null;
+        
+        // Load the new person if we need to
+        if(!this.person || this.person.id !== this.personId){
+          this.loadPerson();
+        }
+      }
+    }
+    
+    _personChanged() {
+      if(this.person){
+        this.personId = this.person.id;
+      }
     }
   });
 </script>
