@@ -1,0 +1,56 @@
+<link rel="import" href="../fs-api-aware/fs-api-aware.html">
+<link rel="import" href="../polymer/polymer-element.html">
+
+<script>
+  /**
+   * `fs-person-mixin`
+   * 
+   * Helps elements retrieve and manage person data from the FamilySearch API
+   *
+   * @polymer
+   * @mixinFunction
+   */
+  const FSPersonMixin = Polymer.dedupingMixin((superClass) => class extends superClass {
+    static get properties() {
+      return {
+        
+        /** Person ID */
+        personId: {
+          type: String,
+          notify: true,
+          observer: '_idChanged',
+          reflectToAttribute: true
+        },
+        
+        /** Person data */
+        person: {
+          type: Object,
+          notify: true,
+          observer: '_personChanged'
+        },
+        
+        /** Whether the person has been requested */
+        personRequested: {
+          type: Boolean,
+          readOnly: true,
+          value: false
+        },
+        
+        /** Whether the person is currently being requested from the API */
+        personLoading: {
+          type: Boolean,
+          readOnly: true,
+          value: false
+        }
+      };
+    }
+    
+    attached() {
+      this.loadPerson();
+    }
+    
+    loadPerson() {
+      // TODO
+    }
+  });
+</script>

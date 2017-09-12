@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>fs-person-mixin test</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../fs-person-mixin.html">
+  </head>
+  <body>
+
+    <script>
+      class MixinApplied extends FSPersonMixin(Polymer.Element) {
+        static get is() { return 'mixin-applied'; }
+      }
+      customElements.define(MixinApplied.is, MixinApplied);
+    </script>
+
+    <test-fixture id="default">
+      <template>
+        <mixin-applied></mixin-applied>
+      </template>
+    </test-fixture>
+
+    <test-fixture id="load-person">
+      <template>
+        <mixin-applied person-id="PPPP-PPP"></mixin-applied>
+      </template>
+    </test-fixture>
+
+    <script>
+      suite('fs-api-aware', function() {
+
+        test('instantiating the element with default properties works', function() {
+          var element = fixture('default');
+          assert.equal(element.clientName, 'default');
+          // TODO: test all defaults
+        });
+
+        test('load a person', function() {
+          var element = fixture('client-named');
+          element.addEventListener('person-loaded', function(){
+            assert.equal(element.clientName, 'foobaz');
+          });
+          assert.equal(element.personId, 'PPPP-PPP');
+        });
+        
+        test('person provided');
+
+      });
+    </script>
+
+  </body>
+</html>
