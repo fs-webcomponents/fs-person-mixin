@@ -31,20 +31,45 @@
         <mixin-applied person-id="PPPP-PPP"></mixin-applied>
       </template>
     </test-fixture>
-
+    
     <script>
+    
       suite('fs-api-aware', function() {
+
+        let server;
+
+        setup(function(){
+          server = sinon.fakeServer.create({
+            respondImmediately: true
+          });
+          server.respondWith(
+            'GET',
+            /\/platform\/tree\/persons\/PPPP-PPP/,
+            [
+              200,
+              { 'Content-Type': 'application/json' },
+              '{"persons":[{"id":"PPPP-PPP"}]}'
+            ]
+          );
+        });
 
         test('instantiating the element with default properties works', function() {
           var element = fixture('default');
           assert.equal(element.clientName, 'default');
-          // TODO: test all defaults
+          assert.equal(element.personId, undefined);
+          assert.equal(element.person, undefined);
+          assert.equal(element.personLoading, false);
+          assert.equal(element.personRequested, false);
         });
 
-        test('load a person', function() {
-          var element = fixture('client-named');
-          element.addEventListener('person-loaded', function(){
-            assert.equal(element.clientName, 'foobaz');
+        test('load a person', function(done) {
+          var element = fixture('load-person');
+          element.addEventListener('person-changed', function(){
+            assert.equal(element.personId, 'PPPP-PPP');
+            assert.equal(element.personLoading, false);
+            assert.equal(element.personRequested, true);
+            expect(element.person).to.exist;
+            done();
           });
           assert.equal(element.personId, 'PPPP-PPP');
         });

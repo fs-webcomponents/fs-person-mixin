@@ -11,7 +11,7 @@
    * @polymer
    * @mixinFunction
    */
-  const FSPersonMixin = Polymer.dedupingMixin((superClass) => class extends superClass {
+  const FSPersonMixin = Polymer.dedupingMixin((superClass) => class extends FSApiAwareMixin(superClass) {
     static get properties() {
       return {
         
@@ -34,14 +34,16 @@
         personRequested: {
           type: Boolean,
           readOnly: true,
-          value: false
+          value: false,
+          notify: true
         },
         
         /** Whether the person is currently being requested from the API */
         personLoading: {
           type: Boolean,
           readOnly: true,
-          value: false
+          value: false,
+          notify: true
         },
         
         /** An fs-request instance */
@@ -49,20 +51,33 @@
       };
     }
     
-    attached() {
-      this.loadPerson();
-    }
-    
     _setupRequest() {
-      if(!this._personRequest()) {
+      if(!this._personRequest) {
         this._personRequest = document.createElement('fs-request');
         if(this.clientName) {
           this._personRequest.clientName = this.clientName;
         }
-        // TODO: Event listeners
-        // * loading status changes
-        // * completed status changes
-        // * response received
+        
+        // Loading status changes
+        this._personRequest.addEventListener('loading-changed', (e) => {
+          this._setPersonLoading(e.detail.value);
+        });
+        
+        // Request status changes
+        this._personRequest.addEventListener('sent-changed', (e) => {
+          this._setPersonRequested(e.detail.value);
+        });
+        
+        // Response received
+        this._personRequest.addEventListener('response', (e) => {
+          if(e.detail && e.detail.response && e.detail.response.data && e.detail.response.data.persons) {
+            this.person = e.detail.response.data.persons[0];
+          }
+        });
+        
+        // Hack to make Polymer setup property observers so that we get change notifications
+        // https://github.com/Polymer/polymer/issues/4526#issuecomment-328966951
+        this._personRequest.ready();
       }
     }
     
