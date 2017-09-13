@@ -28,7 +28,7 @@
 
     <test-fixture id="load-person">
       <template>
-        <mixin-applied person-id="PPPP-PPP"></mixin-applied>
+        <mixin-applied client-name="load" person-id="PPPP-PPP"></mixin-applied>
       </template>
     </test-fixture>
     
@@ -64,6 +64,20 @@
 
         test('load a person', function(done) {
           var element = fixture('load-person');
+          assert.equal(element.clientName, 'load');
+          assert.equal(element.personId, 'PPPP-PPP');
+          assert.equal(element.person, undefined);
+          
+          // Make sure the request wasn't sent before the client was authenticated
+          assert.equal(element.personLoading, false);
+          assert.equal(element.personRequested, false);
+          
+          // Authenticate the client
+          var client = document.createElement('fs-client');
+          client.name = 'load';
+          client.accessToken = 'token';
+          client.configureClient();
+          
           element.addEventListener('person-changed', function(){
             assert.equal(element.personId, 'PPPP-PPP');
             assert.equal(element.personLoading, false);
@@ -71,7 +85,6 @@
             expect(element.person).to.exist;
             done();
           });
-          assert.equal(element.personId, 'PPPP-PPP');
         });
         
         test('person provided', function(){
@@ -85,8 +98,6 @@
           expect(element.person).to.exist;
         });
         
-        test('dont request the person until the client is authenticated');
-
       });
     </script>
 

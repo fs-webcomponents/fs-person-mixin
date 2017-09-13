@@ -54,6 +54,7 @@
     _setupRequest() {
       if(!this._personRequest) {
         this._personRequest = document.createElement('fs-request');
+        this._personRequest.requireAuthentication = true;
         if(this.clientName) {
           this._personRequest.clientName = this.clientName;
         }
