@@ -74,7 +74,16 @@
           assert.equal(element.personId, 'PPPP-PPP');
         });
         
-        test('person provided');
+        test('person provided', function(){
+          var element = fixture('default');
+          element.person = {
+            id: 'MMMM-MMM'
+          };
+          assert.equal(element.personId, 'MMMM-MMM');
+          assert.equal(element.personRequested, false);
+          assert.equal(element.personLoading, false);
+          expect(element.person).to.exist;
+        });
         
         test('dont request the person until the client is authenticated');
 
