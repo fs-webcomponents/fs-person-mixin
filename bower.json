@@ -1,13 +1,13 @@
 {
   "name": "fs-person-mixin",
   "main": "fs-person-mixin.html",
+  "version": "4.0.0",
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.0",
-    "fs-api-aware": "fs-webcomponents/fs-api-aware",
-    "fs-request": "fs-webcomponents/fs-request#v4"
+    "fs-api-aware": "fs-webcomponents/fs-api-aware#^4.0.0",
+    "fs-request": "fs-webcomponents/fs-request#^4.0.0"
   },
   "devDependencies": {
-    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^2.0.0",
     "web-component-tester": "Polymer/web-component-tester#^6.0.0",
     "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0"
   },
