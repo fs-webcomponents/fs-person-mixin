@@ -79,6 +79,9 @@
         // Hack to make Polymer setup property observers so that we get change notifications
         // https://github.com/Polymer/polymer/issues/4526#issuecomment-328966951
         this._personRequest.ready();
+        
+        // Make sure request events propagate
+        this._personRequest.delegateEvents(this);
       }
     }
     
