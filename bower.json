@@ -1,7 +1,7 @@
 {
   "name": "fs-person-mixin",
   "main": "fs-person-mixin.html",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.0",
     "fs-api-aware": "fs-webcomponents/fs-api-aware#^4.0.0",
